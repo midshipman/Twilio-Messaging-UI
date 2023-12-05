@@ -32,7 +32,7 @@ Creating a real-time chat interface with Twilio involves several setup steps. In
     - Twilio Functions will serve as the backend for our chat application. These serverless functions are executed in Twilio’s environment and remove the need for your own server infrastructure.
     - Make sure to configure the functions with the necessary environment variables (like your Account SID and Auth Token) and dependencies. Please check screenshot below for this project.
         
-        ![Screenshot 2023-12-05 at 18.59.59.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/23e05787-4643-4666-af05-1b3973e75e5e/da07fbee-916a-468c-95ee-fd2fb3574e7b/Screenshot_2023-12-05_at_18.59.59.png)
+        ![env-screenshot.png](env-screenshot.png)
         
 
 With these steps, your project is now set up with both a real-time synchronization service and a serverless backend environment. This setup forms the foundation for building the interactive features of your chat application.
