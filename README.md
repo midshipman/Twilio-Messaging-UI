@@ -15,7 +15,7 @@ Key Features:
 - **Advanced chat features like image URL display, message timestamps, and WhatsApp-specific functionalities.
 
 
-# **Setting Up the Project**
+## **Setting Up the Project**
 
 Creating a real-time chat interface with Twilio involves several setup steps. In this section, we’ll guide you through the initial setup process, including Twilio Sync and Twilio Functions, to lay the groundwork for our chat application.
 
