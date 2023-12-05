@@ -3,6 +3,7 @@ This project demonstrates the power and versatility of Twilio's APIs and serverl
 
 
 About the Project:
+
 This repository contains the complete source code for building a real-time chat interface using Twilio. The project leverages Twilio Sync for real-time state synchronization, Programmable SMS for message handling, and Twilio Functions for serverless backend logic. It's designed as an interactive and user-friendly chat application capable of handling SMS and WhatsApp messages, including special features for sending images and templates.
 
 Key Features:
