@@ -8,11 +8,11 @@ This repository contains the complete source code for building a real-time chat 
 
 Key Features:
 
-Real-time messaging with Twilio Sync.
-Support for both SMS and WhatsApp messaging.
-Backend processing with Twilio Functions, including sending messages, token generation, and handling incoming messages.
-Frontend design with responsive HTML/CSS and interactive JavaScript.
-Advanced chat features like image URL display, message timestamps, and WhatsApp-specific functionalities.
+**Real-time messaging with Twilio Sync.
+**Support for both SMS and WhatsApp messaging.
+**Backend processing with Twilio Functions, including sending messages, token generation, and handling incoming messages.
+**Frontend design with responsive HTML/CSS and interactive JavaScript.
+**Advanced chat features like image URL display, message timestamps, and WhatsApp-specific functionalities.
 
 
 # **Setting Up the Project**
