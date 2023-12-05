@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Twilio Chat Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 10px;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        #chat {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            max-width: 400px;
+            height: 400px;
+            overflow-y: auto;
+            margin: 0 auto 10px;
+        }
+        .message {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .message.left .avatar,
+        .message.right .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ddd;
+            background-size: cover;
+        }
+        .message.left {
+            flex-direction: row;
+        }
+        .message.right {
+            flex-direction: row-reverse;
+        }
+        .text {
+            background-color: #e6e6e6;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            word-wrap: break-word;
+            margin: 0 10px;
+        }
+        .text.sent {
+            background-color: #dcf8c6;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+            right: 5px;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+    </style>
+</head>
+<body>
+	<h1>Ahoy there!</h1>
+    <p>This is an example chat app for Twilio Messaging.</p>
+    <div id="chat"></div>
+
+    <form id="send-sms-form">
+        <input type="text" id="to-number" placeholder="Enter recipient's number" required>
+        <textarea id="sms-message" placeholder="Enter your message" ></textarea>
+        <button type="submit" id="send-text">Send Text</button>
+        <button id="send-template" class="btn">Send Template</button>
+
+		<button id="send-image">Send Image</button>
+        
+    </form>
+    
+    
+    
+    <footer>
+      <p>
+        Made with 💖 by your friends at
+        <a href="https://www.twilio.com">Twilio</a>
+      </p>
+    </footer>
+    
+    <script type="text/javascript" src="//media.twiliocdn.com/sdk/js/sync/v3.0/twilio-sync.min.js"></script>
+    
+    <script>
+
+        // Initialize Twilio Sync upon window load
+        window.addEventListener('load', async () => {
+            try {
+                const { syncListName, token } = await fetch('https://replace-with-your-base-url/token').then(res => res.json());
+                const syncClient = new Twilio.Sync.Client(token);
+                const syncList = await syncClient.list(syncListName);
+                
+                /*
+                const existingMessageItems = await syncList.getItems({ order: 'desc' });
+                // Iterating over the items to log the 'message' property
+                existingMessageItems.items.forEach((item)=> {
+                    addMessageToChat(item.data.message, 'received', false);
+                });
+                */
+
+                syncList.on('itemAdded', ({ item }) => {
+                    // Add each new incoming message to the chat UI
+                    if(item.data.mediaUrl !=null){
+                        addMessageToChat(item.data.mediaUrl, 'received', false);
+                    }
+                    else{
+                        addMessageToChat(item.data.message, 'received', false);
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing Twilio Sync:', error);
+            }
+        });
+        
+        document.getElementById('send-text').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            // Example of adding a sent message
+            const toNumber = document.getElementById('to-number').value;
+            const message = document.getElementById('sms-message').value;
+            
+            addMessageToChat(message, 'sent', true);
+            document.getElementById('sms-message').value = ''; // Clear input field
+            
+            sendSMS(toNumber, message)
+           
+            
+            
+        });
+        
+        document.getElementById('send-template').addEventListener('click', function(event) {
+        	event.preventDefault();
+     		const toNumber = document.getElementById('to-number').value;
+            
+            addMessageToChat('send-template', 'sent', true);
+            
+            sendSMS(toNumber, 'template')
+		});
+        
+        document.getElementById('send-image').addEventListener('click', function(event) {
+        	event.preventDefault();
+     		const toNumber = document.getElementById('to-number').value;
+            
+            addMessageToChat('send-image', 'sent', true);
+            
+            sendSMS(toNumber, 'image')
+		});
+        
+        function sendSMS(to, content) {
+            fetch('https://replace-with-your-base-url/sendmessage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer dd2db7046569'
+                },
+                body: JSON.stringify({ to: to, content: content })
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Handle the response data if needed
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+
+        function addMessageToChat(message, type, alignRight) {
+            const chatDiv = document.getElementById('chat');
+            const messageDiv = document.createElement('div');
+            const avatarDiv = document.createElement('div');
+            const textDiv = document.createElement('div');
+            const timestampDiv = document.createElement('div');
+
+            // Assigning classes for styling and alignment
+            messageDiv.className = 'message ' + (alignRight ? 'right' : 'left');
+            avatarDiv.className = 'avatar';
+            textDiv.className = 'text ' + (alignRight ? 'sent' : '');
+            timestampDiv.className = 'timestamp';
+
+            // Generating a random pixel avatar
+            const avatarSeed = Math.floor(Math.random() * 1000);
+            avatarDiv.style.backgroundImage = 'url(https://api.dicebear.com/7.x/lorelei/svg?seed=' + avatarSeed;
+
+
+            // Setting message content 
+            // Check if message is an image URL, we assume only image url received
+            if (message.startsWith('http')) {
+                const img = document.createElement('img');
+                img.src = message;
+                img.style.maxWidth = '100%';
+                img.style.borderRadius = '10px';
+                textDiv.appendChild(img);
+            } else {
+                textDiv.textContent = message;
+            }
+            
+            
+            //set time stamp
+            const date = new Date();
+            timestampDiv.textContent = date.getHours() + ':' + ('0' + date.getMinutes()).slice(-2);
+
+            // Appending elements to the chat div
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(textDiv);
+            textDiv.appendChild(timestampDiv);
+            chatDiv.appendChild(messageDiv);
+
+            // Auto-scroll to the latest message
+            chatDiv.scrollTop = chatDiv.scrollHeight;
+        }
+    </script>
+
+</body>
+</html>
